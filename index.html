@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Web Components Quest: Raiders of the Lost Ark</title>
+<style>
+  body { margin: 0; min-height: 100vh; font-family: Georgia, serif; color: #fdf3d0;
+    background: radial-gradient(circle at 50% 0, #e9a23b, #7a3b10 60%, #2b1305); }
+  h1 { text-align: center; margin: 0; padding: 1.5rem 1rem .5rem; text-shadow: 2px 2px #000; }
+  p.sub { text-align: center; margin: 0 0 1rem; font-style: italic; }
+</style>
+</head>
+<body>
+<h1>🏺 Web Components Quest: Raiders of the Lost Ark 🏺</h1>
+<p class="sub">The Podium of Custom Elements</p>
+
+<wc-podium>
+  <wc-rank place="2" title="King of Web Components" face="king"></wc-rank>
+  <wc-rank place="1" title="The Web Components Heretic" face="heretic"></wc-rank>
+  <wc-rank place="3" title="Everyone Else" face="everyone"></wc-rank>
+</wc-podium>
+
+<script>
+const FACES = {
+  // golden idol-style crowned king
+  king: `<svg viewBox="0 0 100 100"><path d="M20 38l12 10 18-22 18 22 12-10-4 26H24z" fill="#ffd23f" stroke="#7a4b00" stroke-width="3"/>
+    <circle cx="50" cy="66" r="24" fill="#f2c27b" stroke="#7a4b00" stroke-width="3"/>
+    <circle cx="41" cy="62" r="3.5" fill="#222"/><circle cx="59" cy="62" r="3.5" fill="#222"/>
+    <path d="M38 76q12 10 24 0" fill="none" stroke="#222" stroke-width="3" stroke-linecap="round"/></svg>`,
+  // Indy-style fedora adventurer
+  heretic: `<svg viewBox="0 0 100 100"><ellipse cx="50" cy="42" rx="42" ry="10" fill="#5b3a1a" stroke="#2b1305" stroke-width="3"/>
+    <path d="M28 40q0-26 22-26t22 26z" fill="#7a4e24" stroke="#2b1305" stroke-width="3"/>
+    <rect x="28" y="34" width="44" height="6" fill="#2b1305"/>
+    <circle cx="50" cy="66" r="22" fill="#f2c27b" stroke="#7a4b00" stroke-width="3"/>
+    <circle cx="42" cy="62" r="3.5" fill="#222"/><circle cx="58" cy="62" r="3.5" fill="#222"/>
+    <path d="M40 76q12 6 22-4" fill="none" stroke="#222" stroke-width="3" stroke-linecap="round"/></svg>`,
+  // melting-face Ark-opening skull
+  everyone: `<svg viewBox="0 0 100 100"><path d="M18 52Q18 14 50 14t32 38q0 14-8 20v12H26V72q-8-6-8-20z" fill="#e8e4d6" stroke="#555" stroke-width="3"/>
+    <ellipse cx="38" cy="52" rx="8" ry="10" fill="#222"/><ellipse cx="62" cy="52" rx="8" ry="10" fill="#222"/>
+    <path d="M46 68l4-8 4 8z" fill="#222"/><path d="M34 84v-8M44 84v-8M56 84v-8M66 84v-8" stroke="#555" stroke-width="3"/></svg>`
+};
+const STYLE = { 1: ["#ffd700", 200], 2: ["#c0c0c0", 150], 3: ["#cd7f32", 110] };
+
+customElements.define("wc-podium", class extends HTMLElement {
+  connectedCallback() {
+    this.attachShadow({ mode: "open" }).innerHTML =
+      `<style>:host{display:flex;justify-content:center;align-items:flex-end;gap:1rem;padding:1rem;flex-wrap:wrap}</style><slot></slot>`;
+  }
+});
+
+customElements.define("wc-rank", class extends HTMLElement {
+  connectedCallback() {
+    const place = this.getAttribute("place");
+    const [color, height] = STYLE[place] || STYLE[3];
+    this.attachShadow({ mode: "open" }).innerHTML = `
+      <style>
+        :host{display:block;width:min(30vw,220px);min-width:150px;text-align:center}
+        .face{width:100px;height:100px;margin:0 auto}
+        .face svg{width:100%;height:100%}
+        h2{font-size:1rem;margin:.3rem 0;min-height:2.4em}
+        .block{height:${height}px;background:linear-gradient(${color},#00000066);border:3px solid #2b1305;
+          display:flex;align-items:center;justify-content:center;font-size:3rem;font-weight:bold;color:#2b1305}
+      </style>
+      <div class="face">${FACES[this.getAttribute("face")] || ""}</div>
+      <h2>${this.getAttribute("title") || ""}</h2>
+      <div class="block">${place}</div>`;
+  }
+});
+</script>
+</body>
+</html>
